@@ -45,6 +45,15 @@ func (dispatcher *Dispatcher) Dispatch() {
 	}
 }
 
+func (dispatcher *Dispatcher) Run() {
+	for i := 0; i < dispatcher.MaxWorkers; i++ {
+		worker := NewWorker(i, dispatcher.WorkerPool)
+		worker.Start()
+	}
+
+	go dispatcher.Dispatch()
+}
+
 func NewWorker(id int, workerPool chan chan Job) *Worker {
 	return &Worker{
 		Id:         id,
